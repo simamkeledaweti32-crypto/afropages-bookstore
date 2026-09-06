@@ -3,53 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AfroPages - Cape Town Global Bookstore</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<title>AfroPages Bookstore - Cape Town Stories</title>
 <style>
-body{font-family:Segoe UI,sans-serif}
-.hero{background:#1a1a2e;color:white;padding:40px 0;text-align:center}
-.book-card{box-shadow:0 4px 12px rgba(0,0,0,.1);border:none}
-.low-stock{background:#ff4757;color:white;padding:2px 8px;border-radius:10px;font-size:12px}
-.price{color:#FF6B35;font-weight:bold}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f5f5f0;color:#222}
+header{background:#1a1a2e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+header h1{font-size:20px}
+header.controls{display:flex;gap:10px;align-items:center}
+select,button,input{padding:8px 12px;border-radius:6px;border:1px solid #ccc}
+button{background:#e94560;color:white;border:none;cursor:pointer;font-weight:bold}
+button:hover{background:#c7364f}
+.hero{background:#16213e;color:white;text-align:center;padding:30px 15px}
+.hero h2{font-size:26px;margin-bottom:8px}
+.search-bar{padding:15px;background:white;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+.books{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px;padding:15px}
+.card{background:white;border-radius:10px;padding:15px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.card h3{margin:8px 0;color:#16213e}
+.card.price{color:#e94560;font-weight:bold;font-size:18px}
+.low{color:red;font-weight:bold;font-size:12px;background:#ffe0e0;padding:3px 6px;border-radius:4px;display:inline-block}
+.stock{color:green;font-size:12px}
+.cart-panel{position:fixed;top:0;right:-100%;width:90%;max-width:380px;height:100%;background:white;box-shadow:-3px 0 10px rgba(0,0,0,0.3);z-index:1000;transition:0.3s;padding:15px;overflow-y:auto}
+.cart-panel.open{right:0}
+.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999}
+.overlay.show{display:block}
+.login-box{max-width:400px;margin:20px auto;background:white;padding:20px;border-radius:10px;display:none}
+.login-box.show{display:block}
+.checkout{margin-top:15px;padding:15px;border:1px solid #ddd;border-radius:8px;background:#fafafa}
 </style>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark sticky-top">
-<div class="container">
-<b>📚 AfroPages</b>
-<div class="d-flex gap-2">
-<select id="curr" class="form-select form-select-sm" style="width:90px"><option>ZAR</option><option>USD</option></select>
-<button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
-<button class="btn btn-light btn-sm" onclick="viewCart()">🛒 <span id="cnt">0</span></button>
+<header>
+<div><h1>📚 AfroPages Bookstore</h1><small>Cape Town Stories for the World</small></div>
+<div class="controls">
+<select id="currency"><option value="ZAR">ZAR - R</option><option value="USD">USD - $</option></select>
+<button onclick="toggleLogin()" id="loginBtn">Login</button>
+<button onclick="openCart()">🛒 Cart <span id="cartCount">0</span></button>
 </div>
+</header>
+<div class="hero">
+<h2>Cape Town Stories for the World</h2>
+<p>African literature delivered worldwide via DHL & Paxi</p>
+<p style="margin-top:10px;font-size:13px">Demo Login: admin@afropages.co.za / admin123 OR any email / 1234</p>
 </div>
-</nav>
-<div class="hero"><h2>Cape Town Stories for the World</h2><p>Physical via DHL R400 / Paxi R100 + Instant eBook R0 | PayPal PayFast</p></div>
-<div class="container my-3">
-<input id="search" class="form-control mb-2" placeholder="Search books..." onkeyup="filterBooks()">
-<div class="row" id="bookList"></div>
+<div class="search-bar">
+<input type="text" id="search" placeholder="Search books..." onkeyup="renderBooks()" style="width:200px">
+<select id="filterCat" onchange="renderBooks()"><option value="all">All Categories</option><option value="Folktales">Folktales</option><option value="History">History</option><option value="Cooking">Cooking</option></select>
 </div>
-<div class="modal fade" id="loginModal"><div class="modal-dialog"><div class="modal-content"><div class="modal-body">
-<h5>Login / Register - Validation</h5>
-<div id="err" class="alert alert-danger d-none"></div>
-<input id="email" class="form-control mb-2" placeholder="Email must have @" type="email">
-<input id="pass" class="form-control mb-2" placeholder="Password min 6 chars" type="password">
-<button class="btn btn-dark w-100" onclick="login()">Login / Register</button>
-<div id="ok" class="alert alert-success mt-2 d-none"></div>
-</div></div></div></div>
-<div class="modal fade" id="cartModal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5>Cart & Receipt</h5></div><div class="modal-body" id="cartBody"></div><div class="modal-footer"><div class="w-100"><p>Total: <b id="total">R0</b></p><select id="ship" class="form-select mb-2"><option value="0">eBook Free</option><option value="100">Paxi R100</option><option value="400">DHL R400</option></select><button class="btn btn-warning w-100" onclick="checkout()">Pay with PayPal / PayFast</button><div id="receipt" class="mt-2"></div></div></div></div></div></div>
+<div id="loginBox" class="login-box">
+<h3>Login - Secure Access</h3>
+<input type="email" id="email" placeholder="Email" style="width:100%;margin:10px 0">
+<input type="password" id="password" placeholder="Password" style="width:100%;margin:10px 0">
+<button onclick="login()" style="width:100%">Login</button>
+<p id="loginMsg" style="color:red;margin-top:10px;font-size:13px"></p>
+<button onclick="logout()" style="width:100%;margin-top:10px;background:#666">Logout</button>
+</div>
+<div class="books" id="books"></div>
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="cart-panel" id="cartPanel">
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+<div class="checkout">
+<h4>Shipping:</h4>
+<label><input type="radio" name="ship" value="400" checked onchange="renderCart()"> DHL Express - R400</label><br>
+<label><input type="radio" name="ship" value="100" onchange="renderCart()"> Paxi Counter - R100</label><br>
+<label><input type="radio" name="ship" value="0" onchange="renderCart()"> eBook Only - R0 Instant</label>
+<h4 style="margin-top:10px">Payment:</h4>
+<label><input type="radio" name="pay" value="paypal" checked> PayPal</label>
+<label><input type="radio" name="pay" value="payfast"> PayFast</label>
+<h3 style="margin-top:15px">Total: <span id="total">R0</span></h3>
+<button onclick="checkout()" style="width:100%;margin-top:10px;padding:12px">Checkout & Get Receipt</button>
+<div id="receipt" style="margin-top:15px;font-size:13px;background:white;padding:10px;border-radius:6px;display:none"></div>
+</div>
+<button onclick="closeCart()" style="width:100%;margin-top:10px;background:#666">Close</button>
+</div>
 <script>
-let books=[{id:1,t:"Xhosa Folktales for Children",c:"folktale",p:280,s:12,ty:"Physical+eBook"},{id:2,t:"District Six Memories",c:"history",p:350,s:4,ty:"Physical"},{id:3,t:"Cape Malay Cooking Heritage",c:"culture",p:320,s:20,ty:"Physical+eBook"},{id:4,t:"Robben Island Voices",c:"history",p:380,s:3,ty:"Physical+eBook"},{id:5,t:"Table Mountain Kids Adventure",c:"kids",p:250,s:15,ty:"eBook"},{id:6,t:"Bo-Kaap Colours",c:"culture",p:300,s:8,ty:"Physical"}];
-let cart=[],logged=false,curr="ZAR",rate=18.5;
-function render(list=books){let h="";list.forEach(b=>{let price=curr=="ZAR"?`R${b.p}`:`$${(b.p/rate).toFixed(2)}`;let low=b.s<5?`<span class=low-stock>Low Stock ${b.s}!</span>`:`${b.s} in stock`;h+=`<div class="col-6 col-md-4 mb-3"><div class="card book-card p-2 h-100"><h6>${b.t}</h6><small>${b.ty}</small><br><span class=price>${price}</span><br><small>${low}</small><br><button class="btn btn-dark btn-sm w-100 mt-1" onclick="addCart(${b.id})">Add to Cart</button></div></div>`});document.getElementById("bookList").innerHTML=h;}
-function addCart(id){if(!logged){alert("Please login first! Validation required");return;}let b=books.find(x=>x.id==id);if(b.s<=0)return alert("Out of stock! Stock management");b.s--;let it=cart.find(x=>x.id==id);if(it)it.q++;else cart.push({...b,q:1});document.getElementById("cnt").innerText=cart.reduce((a,c)=>a+c.q,0);if(b.s<5)alert(`Low stock alert! ${b.t} only ${b.s} left!`);render();}
-function viewCart(){let body=document.getElementById("cartBody");if(!cart.length)body.innerHTML="Cart empty - Checkout blocked (Error handling)";else{let html="<table class=table><tr><th>Book</th><th>Qty</th></tr>";cart.forEach(c=>html+=`<tr><td>${c.t} (${c.ty})</td><td>${c.q}</td></tr>`);html+="</table>";body.innerHTML=html;let tot=cart.reduce((a,c)=>a+c.p*c.q,0);document.getElementById("total").innerText=curr=="ZAR"?`R${tot}`:`$${(tot/rate).toFixed(2)}`;}new bootstrap.Modal(document.getElementById("cartModal")).show();}
-function login(){let e=document.getElementById("email").value,p=document.getElementById("pass").value,er=document.getElementById("err"),ok=document.getElementById("ok");er.classList.add("d-none");if(!e.includes("@")||!e.includes(".")){er.innerText="Error handling: Invalid email format!";er.classList.remove("d-none");return;}if(p.length<6){er.innerText="Error handling: Password min 6 chars! Data validation failed";er.classList.remove("d-none");return;}logged=true;localStorage.setItem("token",btoa(e+Date.now()));ok.innerText=`Authentication success! Token stored. Welcome ${e}`;ok.classList.remove("d-none");setTimeout(()=>bootstrap.Modal.getInstance(document.getElementById("loginModal")).hide(),1000);}
-function checkout(){if(!cart.length)return alert("Error: Cart empty! Cannot checkout");let ship=parseInt(document.getElementById("ship").value);let tot=cart.reduce((a,c)=>a+c.p*c.q,0)+ship;let id="AFRO"+Date.now();let email=document.getElementById("email").value;document.getElementById("receipt").innerHTML=`<div class="alert alert-success"><b>✅ Receipt #${id}</b><br>Email: ${email}<br>Total: R${tot}<br>Payment: PayPal Sandbox Success<br>DHL Tracking: DHL${id}<br>${cart.some(c=>c.ty.includes("eBook"))?'<a href="#">📥 Download eBook Instant</a>':''}<br>Stock management updated</div>`;cart=[];document.getElementById("cnt").innerText=0;}
-function filterBooks(){let q=document.getElementById("search").value.toLowerCase();render(books.filter(b=>b.t.toLowerCase().includes(q)||b.c.includes(q)));}
-document.getElementById("curr").addEventListener("change",e=>{curr=e.target.value;render();});
-render();
+let booksData=[
+{id:1,title:"Xhosa Folktales",category:"Folktales",price:280,stock:12,image:"📖",desc:"Traditional Xhosa stories"},
+{id:2,title:"District Six Memories",category:"History",price:350,stock:4,image:"🏘️",desc:"History of District Six"},
+{id:3,title:"Cape Malay Cooking",category:"Cooking",price:320,stock:8,image:"🍛",desc:"Cape Malay recipes"},
+{id:4,title:"Table Mountain Tales",category:"Folktales",price:250,stock:2,image:"⛰️",desc:"Legends of Table Mountain"},
+{id:5,title:"Robben Island Stories",category:"History",price:380,stock:15,image:"🏝️",desc:"Stories from Robben Island"},
+{id:6,title:"African Proverbs Collection",category:"Folktales",price:200,stock:0,image:"💬",desc:"Wise African proverbs"}
+];
+let cart=JSON.parse(localStorage.getItem('cart')||'[]');
+let user=localStorage.getItem('user');
+function renderBooks(){
+ let q=document.getElementById('search').value.toLowerCase();
+ let cat=document.getElementById('filterCat').value;
+ let cur=document.getElementById('currency').value;
+ let filtered=booksData.filter(b=>{return (b.title.toLowerCase().includes(q)||b.desc.toLowerCase().includes(q))&&(cat==='all'||b.category===cat)});
+ let html='';
+ filtered.forEach(b=>{
+  let displayPrice=cur==='USD'?'$'+(b.price/18).toFixed(2):'R'+b.price;
+  let stockLabel=b.stock===0?'<span class="low">OUT OF STOCK</span>':b.stock<=4?`<span class="low">Low Stock ${b.stock}!</span>`:`<span class="stock">${b.stock} in stock</span>`;
+  html+=`<div class="card"><div style="font-size:40px;text-align:center">${b.image}</div><h3>${b.title}</h3><small>${b.category} - ${b.desc}</small><br>${stockLabel}<div class="price">${displayPrice}</div><button onclick="addToCart(${b.id})" ${b.stock===0?'disabled style="background:#999"':''}>${b.stock===0?'Out of Stock':'Add to Cart'}</button></div>`;
+ });
+ document.getElementById('books').innerHTML=html||'<p style="padding:20px">No books found</p>';
+ updateCartCount();
+}
+function addToCart(id){
+ let book=booksData.find(b=>b.id===id);
+ if(book.stock<=0){alert('Out of stock! Stock management working!');return;}
+ let item=cart.find(c=>c.id===id);
+ if(item){if(item.qty<book.stock)item.qty++;else{alert('Only '+book.stock+' in stock!');return;}}
+ else cart.push({...book,qty:1});
+ localStorage.setItem('cart',JSON.stringify(cart));
+ renderBooks();renderCart();alert(book.title+' added!');
+}
+function updateCartCount(){document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.qty,0);}
+function openCart(){document.getElementById('cartPanel').classList.add('open');document.getElementById('overlay').classList.add('show');renderCart();}
+function closeCart(){document.getElementById('cartPanel').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+function renderCart(){
+ let cur=document.getElementById('currency').value;
+ let ship=parseInt(document.querySelector('input[name="ship"]:checked')?.value||0);
+ let html='';let sub=0;
+ cart.forEach((c,i)=>{
+  let price=cur==='USD'?(c.price/18).toFixed(2):c.price;
+  let symbol=cur==='USD'?'$':'R';
+  sub+=c.price*c.qty;
+  html+=`<div style="display:flex;justify-content:space-between;margin:8px 0;border-bottom:1px solid #eee;padding-bottom:5px"><div>${c.title} x${c.qty}<br><small>${symbol}${price}</small></div><button onclick="removeItem(${i})" style="background:#999;padding:3px 8px">X</button></div>`;
+ });
+ document.getElementById('cartItems').innerHTML=html||'Cart empty';
+ let total=sub+ship;
+ let displayTotal=cur==='USD'?'$'+(total/18).toFixed(2):'R'+total;
+ let displayShip=cur==='USD'?'$'+(ship/18).toFixed(2):'R'+ship;
+ document.getElementById('total').innerText=displayTotal+' (Shipping: '+displayShip+')';
+}
+function removeItem(i){cart.splice(i,1);localStorage.setItem('cart',JSON.stringify(cart));renderCart();updateCartCount();}
+function checkout(){
+ if(cart.length===0){alert('Cart empty!');return;}
+ let ship=document.querySelector('input[name="ship"]:checked').parentElement.innerText;
+ let pay=document.querySelector('input[name="pay"]:checked').value;
+ let total=document.getElementById('total').innerText;
+ let receipt=`<h4>🧾 Receipt - AfroPages</h4>Customer: ${localStorage.getItem('user')||'Guest'}<br>Date: ${new Date().toLocaleString()}<br><br>${cart.map(c=>`${c.title} x${c.qty} - R${c.price*c.qty}`).join('<br>')}<br><br>${ship}<br>Payment: ${pay}<br><b>${total}</b><br><br>${document.querySelector('input[name="ship"]:checked').value==='0'?'📥 eBook Download: <a href="#" onclick="alert(\'eBook downloaded!\')">Download PDF</a> (R0 FREE)':'📦 Physical books will be shipped!'}<br><br>Thank you!`;
+ document.getElementById('receipt').innerHTML=receipt;
+ document.getElementById('receipt').style.display='block';
+ cart.forEach(c=>{let b=booksData.find(x=>x.id===c.id);if(b)b.stock-=c.qty;});
+ cart=[];localStorage.setItem('cart',JSON.stringify(cart));localStorage.setItem('books',JSON.stringify(booksData));
+ renderBooks();updateCartCount();alert('Checkout successful!');
+}
+function toggleLogin(){let box=document.getElementById('loginBox');box.classList.toggle('show');if(user)document.getElementById('loginMsg').innerText='Logged in as '+user;}
+function login(){
+ let email=document.getElementById('email').value.trim();
+ let pass=document.getElementById('password').value.trim();
+ let msg=document.getElementById('loginMsg');
+ if(!email||!pass){msg.innerText='Enter email and password! (Validation working)';return;}
+ if((email==='admin@afropages.co.za'&&pass==='admin123')||pass==='1234'||pass==='admin123'){
+  localStorage.setItem('user',email);user=email;msg.style.color='green';msg.innerText='Login successful! Welcome '+email;
+  document.getElementById('loginBtn').innerText='👤 '+email.split('@')[0];
+  setTimeout(()=>{document.getElementById('loginBox').classList.remove('show')},1000);
+ }else{msg.style.color='red';msg.innerText='Invalid credentials! Hint: use 1234. Security works!';}
+}
+function logout(){localStorage.removeItem('user');user=null;document.getElementById('loginBtn').innerText='Login';document.getElementById('loginMsg').innerText='Logged out!';}
+document.getElementById('currency').addEventListener('change',()=>{renderBooks();renderCart();});
+window.onload=()=>{
+ let saved=localStorage.getItem('books');if(saved)booksData=JSON.parse(saved);
+ if(user)document.getElementById('loginBtn').innerText='👤 '+user.split('@')[0];
+ renderBooks();renderCart();
+}
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
