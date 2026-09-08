@@ -2,224 +2,112 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AfroPages Bookstore - 100% Working</title>
+<title>AfroPages - Final Visible Password</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f4f1ea}
-header{background:#0f1b2d;color:#fff;padding:12px 15px;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+body{background:#f4f1ea} header{background:#0f1b2d;color:#fff;padding:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .btn{background:#e94560;color:#fff;border:none;padding:10px 14px;border-radius:8px;font-weight:bold;cursor:pointer}
-.btn:hover{background:#c5364f}.btn:disabled{background:#999}
-.badge{background:#e94560;color:white;border-radius:50%;padding:2px 6px;font-size:12px;margin-left:4px}
-.hero{background:#1a2a4a;color:#fff;text-align:center;padding:25px 15px}
-.tools{background:#fff;padding:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-.tools input,.tools select{padding:9px 12px;border:1px solid #ccc;border-radius:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;padding:14px}
-.card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.08);border:2px solid transparent}
-.card:hover{border-color:#e94560}
-.price{color:#e94560;font-weight:bold;font-size:20px;margin:6px 0}
-.stock-green{color:#1a8a2a;font-size:13px;font-weight:bold}
-.stock-low{background:#ffdddd;color:#b00000;font-size:12px;padding:3px 7px;border-radius:5px;font-weight:bold;display:inline-block;animation:pulse 1s infinite}
-.stock-out{background:#333;color:#fff;font-size:12px;padding:3px 7px;border-radius:5px}
-@keyframes pulse{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
-.loginPanel{max-width:420px;margin:14px auto;background:#fff;padding:18px;border-radius:12px;display:none;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.price{color:#e94560;font-weight:bold;font-size:20px}
+.low{background:#ffdddd;color:#b00000;padding:3px 7px;border-radius:5px;font-size:12px;font-weight:bold}
+.ok{color:green;font-weight:bold;font-size:13px}
+.out{background:#333;color:#fff;padding:3px 7px;border-radius:5px;font-size:12px}
+.cartDrawer{position:fixed;top:0;right:-105%;width:92%;max-width:400px;height:100%;background:#fff;z-index:1001;transition:.35s;padding:16px;overflow-y:auto}
+.cartDrawer.open{right:0}.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:1000;display:none}
+.overlay.show{display:block}.loginPanel{max-width:400px;margin:14px auto;background:#fff;padding:18px;border-radius:12px;display:none}
 .loginPanel.show{display:block}
-.cartDrawer{position:fixed;top:0;right:-105%;width:92%;max-width:400px;height:100%;background:#fff;z-index:1001;transition:.35s;padding:16px;overflow-y:auto;box-shadow:-4px 0 20px rgba(0,0,0,.3)}
-.cartDrawer.open{right:0}
-.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:1000;display:none}
-.overlay.show{display:block}
-.line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
-.totalBox{background:#0f1b2d;color:#fff;padding:12px;border-radius:8px;margin-top:12px}
-.shipBox,.payBox{margin-top:12px;padding:12px;border:1px solid #ddd;border-radius:8px;background:#fafafa}
-.shipBox label,.payBox label{display:block;margin:6px 0;cursor:pointer;padding:6px;border-radius:6px}
-.receipt{background:#fff;color:#000;padding:12px;border-radius:8px;margin-top:12px;border:2px dashed #0f1b2d;display:none;white-space:pre-wrap;font-family:monospace;font-size:13px}
+.receipt{background:#fff;padding:12px;border:2px dashed #000;border-radius:8px;margin-top:12px;display:none;white-space:pre-wrap;font-family:monospace;font-size:13px}
 </style>
 </head>
 <body>
 <header>
-<div><h1>📚 AfroPages Bookstore</h1><small style="opacity:.8">Cape Town Stories - FINAL 100%</small></div>
-<div style="display:flex;gap:8px;align-items:center">
-<select id="currency" onchange="renderAll()"><option value="ZAR">ZAR R</option><option value="USD">USD $</option></select>
-<button class="btn" onclick="toggleLogin()" id="loginBtn" style="background:#fff;color:#0f1b2d">Login</button>
-<button class="btn" onclick="openCart()">🛒 Cart <span id="cartCount" class="badge">0</span></button>
-</div>
+<div><h1>📚 AfroPages Bookstore</h1><small>FINAL - Password Visible for Demo</small></div>
+<div><button class="btn" onclick="toggleLogin()" id="loginBtn" style="background:#fff;color:#000">Login</button> <button class="btn" onclick="openCart()">Cart <span id="cnt">0</span></button></div>
 </header>
-<div class="hero">
-<h2>Cape Town Stories for the World</h2>
-<p>Stock Management ✓ Login Security ✓ Delivery & Payment ✓ Receipts ✓</p>
-<p style="margin-top:8px;background:rgba(255,255,255,.15);display:inline-block;padding:6px 12px;border-radius:20px;font-size:12px">LOGIN: admin@afropages.co.za / admin123 OR any email + 1234</p>
-</div>
-<div class="tools">
-<input id="search" placeholder="🔍 Search books..." onkeyup="renderAll()" style="min-width:200px">
-<select id="cat" onchange="renderAll()"><option value="all">All Categories</option><option value="Folktales">Folktales</option><option value="History">History</option><option value="Cooking">Cooking</option></select>
-<button class="btn" onclick="resetStock()" style="background:#0f1b2d">Reset Stock</button>
-</div>
+<div style="background:#1a2a4a;color:#fff;text-align:center;padding:20px"><h2>Cape Town Stories for the World</h2><p style="background:yellow;color:black;display:inline-block;padding:4px 10px;border-radius:5px;margin-top:5px">VISIBLE LOGIN: admin@afropages.co.za / admin123</p></div>
+<div style="background:#fff;padding:10px;display:flex;gap:8px;justify-content:center"><input id="search" placeholder="Search..." onkeyup="render()"><button class="btn" onclick="resetS()" style="background:#0f1b2d">Reset Stock</button></div>
 <div id="loginPanel" class="loginPanel">
-<h3>🔐 Secure Login</h3>
-<input id="email" type="email" placeholder="Email" style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc">
-<input id="pass" type="password" placeholder="Password" style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc">
+<h3>🔐 Login - Password Visible for Recording</h3>
+<label>Email:</label>
+<input id="email" type="text" placeholder="Type email here - VISIBLE" style="width:100%;padding:10px;margin:5px 0;border:2px solid #0f1b2d;border-radius:8px">
+<label>Password (VISIBLE for video demo):</label>
+<input id="pass" type="text" placeholder="Type password - WILL SHOW e.g. admin123" style="width:100%;padding:10px;margin:5px 0;border:2px solid #e94560;border-radius:8px;background:#fff9f9">
+<small style="color:#e94560">⚠️ Password is visible so lecturer can see in screen recording - for demo only</small><br><br>
 <button class="btn" onclick="doLogin()" style="width:100%">Login</button>
-<p id="loginMsg" style="margin-top:10px;font-size:13px;font-weight:bold"></p>
-<button class="btn" onclick="doLogout()" style="width:100%;background:#666;margin-top:8px">Logout</button>
+<p id="msg" style="margin-top:8px;font-weight:bold"></p>
+<p style="font-size:12px;margin-top:8px;background:#f0f0f0;padding:8px;border-radius:5px">Try:<br>admin@afropages.co.za / admin123<br>test@test.com / 1234</p>
 </div>
 <div class="grid" id="grid"></div>
 <div class="overlay" id="overlay" onclick="closeCart()"></div>
-<div class="cartDrawer" id="cartDrawer">
-<h2>🛒 Your Cart</h2>
-<div id="cartList" style="margin-top:10px"></div>
-<div class="shipBox">
-<h4>🚚 Delivery Method</h4>
-<label><input type="radio" name="ship" value="400" data-label="DHL Express International" checked onchange="renderCart()"> DHL Express International - R400 (3-5 days worldwide)</label>
-<label><input type="radio" name="ship" value="100" data-label="Paxi Counter South Africa" onchange="renderCart()"> Paxi Counter - R100 (7-9 days SA - PEP store)</label>
-<label><input type="radio" name="ship" value="0" data-label="eBook Instant Download" onchange="renderCart()"> eBook Instant Download - R0 FREE</label>
+<div class="cartDrawer" id="drawer">
+<h2>Your Cart</h2><div id="cartList"></div>
+<div style="margin-top:10px;padding:10px;border:1px solid #ddd;background:#fafafa;border-radius:8px">
+<h4>Delivery</h4>
+<label><input type="radio" name="ship" value="400" checked onchange="renderCart()"> DHL Express - R400</label><br>
+<label><input type="radio" name="ship" value="100" onchange="renderCart()"> Paxi - R100</label><br>
+<label><input type="radio" name="ship" value="0" onchange="renderCart()"> eBook - R0 FREE</label>
+<h4 style="margin-top:10px">Payment</h4>
+<label><input type="radio" name="pay" value="PayPal" checked> PayPal</label>
+<label><input type="radio" name="pay" value="PayFast"> PayFast</label>
 </div>
-<div class="payBox">
-<h4>💳 Payment Method</h4>
-<label><input type="radio" name="pay" value="PayPal" checked> PayPal (International)</label>
-<label><input type="radio" name="pay" value="PayFast"> PayFast (South Africa)</label>
-<label><input type="radio" name="pay" value="Cash on Delivery"> Cash on Delivery (Paxi only)</label>
-</div>
-<div class="totalBox">
-<div>Subtotal: <span id="subTotal">R0</span></div>
-<div>Shipping: <span id="shipTotal">R400</span></div>
-<h3 style="margin-top:6px">TOTAL: <span id="grandTotal">R0</span></h3>
-</div>
-<button class="btn" onclick="doCheckout()" style="width:100%;margin-top:12px;padding:14px;font-size:16px">✅ CHECKOUT & GENERATE RECEIPT</button>
+<div style="background:#0f1b2d;color:#fff;padding:10px;border-radius:8px;margin-top:10px"><div>Subtotal: <span id="sub">R0</span></div><div>Shipping: <span id="sh">R400</span></div><h3>Total: <span id="tot">R0</span></h3></div>
+<button class="btn" onclick="checkout()" style="width:100%;margin-top:10px;padding:14px">CHECKOUT & RECEIPT</button>
 <div id="receipt" class="receipt"></div>
-<button class="btn" onclick="closeCart()" style="width:100%;background:#666;margin-top:10px">Close</button>
+<button class="btn" onclick="closeCart()" style="width:100%;background:#666;margin-top:8px">Close</button>
 </div>
 <script>
-const defaultBooks=[
-{id:1,title:"Xhosa Folktales",cat:"Folktales",price:280,stock:12,icon:"📖",desc:"Traditional Xhosa Folktales"},
-{id:2,title:"District Six Memories",cat:"History",price:350,stock:4,icon:"🏘️",desc:"History of District Six Cape Town"},
-{id:3,title:"Cape Malay Cooking",cat:"Cooking",price:320,stock:8,icon:"🍛",desc:"Authentic Cape Malay Recipes"},
-{id:4,title:"Table Mountain Tales",cat:"Folktales",price:250,stock:2,icon:"⛰️",desc:"Legends of Table Mountain"},
-{id:5,title:"Robben Island Stories",cat:"History",price:380,stock:15,icon:"🏝️",desc:"Stories from Robben Island"},
-{id:6,title:"African Proverbs Collection",cat:"Folktales",price:200,stock:0,icon:"💬",desc:"Wise African Proverbs"}
-];
-let books=JSON.parse(localStorage.getItem('afro_books_v3')||'null')||JSON.parse(JSON.stringify(defaultBooks));
-let cart=JSON.parse(localStorage.getItem('afro_cart_v3')||'[]');
-let user=localStorage.getItem('afro_user_v3');
-function save(){localStorage.setItem('afro_books_v3',JSON.stringify(books));localStorage.setItem('afro_cart_v3',JSON.stringify(cart));}
-function renderAll(){renderBooks();renderCart();updateCount();}
-function updateCount(){document.getElementById('cartCount').innerText=cart.reduce((a,b)=>a+b.qty,0);if(user)document.getElementById('loginBtn').innerText='👤 '+user.split('@')[0];}
-function renderBooks(){
- const q=document.getElementById('search').value.toLowerCase();
- const c=document.getElementById('cat').value;
- const cur=document.getElementById('currency').value;
- const rate=18;
- const filtered=books.filter(b=>(b.title.toLowerCase().includes(q)||b.desc.toLowerCase().includes(q))&&(c==='all'||b.cat===c));
- let h='';
- filtered.forEach(b=>{
-   const displayPrice=cur==='USD'?'$'+(b.price/rate).toFixed(2):'R'+b.price;
-   let stockHTML='';
-   if(b.stock===0) stockHTML=`<span class="stock-out">❌ OUT OF STOCK (0)</span>`;
-   else if(b.stock<=4) stockHTML=`<span class="stock-low">⚠️ LOW STOCK: ${b.stock} left!</span>`;
-   else stockHTML=`<span class="stock-green">✅ ${b.stock} in stock</span>`;
-   const cartQty=cart.find(x=>x.id===b.id)?.qty||0;
-   h+=`<div class="card"><div style="font-size:42px;text-align:center">${b.icon}</div><h3>${b.title}</h3><small style="color:#555">${b.cat} - ${b.desc}</small><br><div style="margin:6px 0">${stockHTML} ${cartQty>0?`<span style="font-size:12px;color:#e94560;font-weight:bold"> | In Cart: ${cartQty}</span>`:''}</div><div class="price">${displayPrice}</div><button class="btn" onclick="addToCart(${b.id})" ${b.stock===0?'disabled':''} style="width:100%">${b.stock===0?'Out of Stock':'Add to Cart'}</button></div>`;
- });
- document.getElementById('grid').innerHTML=h||'<p style="padding:20px">No books found</p>';
+const def=[{id:1,t:"Xhosa Folktales",c:"Folktales",p:280,s:12,i:"📖"},{id:2,t:"District Six Memories",c:"History",p:350,s:4,i:"🏘️"},{id:3,t:"Cape Malay Cooking",c:"Cooking",p:320,s:8,i:"🍛"},{id:4,t:"Table Mountain Tales",c:"Folktales",p:250,s:2,i:"⛰️"},{id:5,t:"Robben Island Stories",c:"History",p:380,s:15,i:"🏝️"},{id:6,t:"African Proverbs",c:"Folktales",p:200,s:0,i:"💬"}];
+let books=JSON.parse(localStorage.getItem('bks')||'null')||JSON.parse(JSON.stringify(def));
+let cart=JSON.parse(localStorage.getItem('crt')||'[]');
+let user=localStorage.getItem('usr');
+function save(){localStorage.setItem('bks',JSON.stringify(books));localStorage.setItem('crt',JSON.stringify(cart));}
+function render(){
+ let q=document.getElementById('search').value.toLowerCase();
+ let h=''; books.filter(b=>b.t.toLowerCase().includes(q)).forEach(b=>{
+  let stock=b.s===0?`<span class="out">OUT OF STOCK</span>`:b.s<=4?`<span class="low">LOW STOCK ${b.s} left!</span>`:`<span class="ok">${b.s} in stock</span>`;
+  let inC=cart.find(x=>x.id===b.id)?.qty||0;
+  h+=`<div class="card"><div style="font-size:40px;text-align:center">${b.i}</div><h3>${b.t}</h3><small>${b.c}</small><br>${stock} ${inC?`| In Cart: ${inC}`:''}<div class="price">R${b.p}</div><button class="btn" onclick="add(${b.id})" ${b.s===0?'disabled':''} style="width:100%">${b.s===0?'Out of Stock':'Add to Cart'}</button></div>`;
+ }); document.getElementById('grid').innerHTML=h; document.getElementById('cnt').innerText=cart.reduce((a,b)=>a+b.qty,0); renderCart();
 }
-function addToCart(id){
- const book=books.find(b=>b.id===id);
- if(book.stock<=0){alert('❌ OUT OF STOCK! Stock Management Working!');return;}
- const existing=cart.find(c=>c.id===id);
- if(existing){existing.qty++;} else cart.push({id:book.id,title:book.title,price:book.price,qty:1,icon:book.icon});
- book.stock--;
- save(); renderAll();
+function add(id){
+ let b=books.find(x=>x.id===id);
+ if(b.s<=0){alert('Out of stock!');return;}
+ let c=cart.find(x=>x.id===id);
+ if(c) c.qty++; else cart.push({id:b.id,t:b.t,p:b.p,qty:1});
+ b.s--; save(); render();
 }
-function removeFromCart(idx){
- const item=cart[idx];
- const book=books.find(b=>b.id===item.id);
- book.stock+=item.qty;
- cart.splice(idx,1);
- save(); renderAll();
-}
-function changeQty(idx,delta){
- const item=cart[idx];
- const book=books.find(b=>b.id===item.id);
- if(delta>0){if(book.stock<=0){alert('No more stock!');return;}book.stock--;item.qty++;}
- else{if(item.qty<=1){removeFromCart(idx);return;}book.stock++;item.qty--;}
- save(); renderAll();
+function remove(i){
+ let it=cart[i]; let b=books.find(x=>x.id===it.id); b.s+=it.qty; cart.splice(i,1); save(); render();
 }
 function renderCart(){
- const cur=document.getElementById('currency').value;
- const rate=18;
- const shipEl=document.querySelector('input[name="ship"]:checked');
- const ship=shipEl?parseInt(shipEl.value):0;
- const shipLabel=shipEl?shipEl.dataset.label:'';
- let sub=0; let html='';
- if(cart.length===0) html='<p>Cart empty - add books! Stock will reduce live.</p>';
- cart.forEach((c,i)=>{
-  sub+=c.price*c.qty;
-  const p=cur==='USD'?'$'+(c.price/rate).toFixed(2):'R'+c.price;
-  html+=`<div class="line"><div>${c.icon} ${c.title}<br><small>${p} x ${c.qty} = ${cur==='USD'?'$'+(c.price*c.qty/rate).toFixed(2):'R'+(c.price*c.qty)}</small></div><div><button class="btn" style="padding:4px 8px;background:#0f1b2d" onclick="changeQty(${i},-1)">-</button> <b>${c.qty}</b> <button class="btn" style="padding:4px 8px;background:#0f1b2d" onclick="changeQty(${i},1)">+</button> <button class="btn" style="padding:4px 8px;background:#999" onclick="removeFromCart(${i})">X</button></div></div>`;
- });
- document.getElementById('cartList').innerHTML=html;
- const shipDisp=cur==='USD'?'$'+(ship/rate).toFixed(2):'R'+ship;
- const subDisp=cur==='USD'?'$'+(sub/rate).toFixed(2):'R'+sub;
- const grand=sub+ship;
- const grandDisp=cur==='USD'?'$'+(grand/rate).toFixed(2):'R'+grand;
- document.getElementById('subTotal').innerText=subDisp;
- document.getElementById('shipTotal').innerText=shipDisp+` (${shipLabel})`;
- document.getElementById('grandTotal').innerText=grandDisp;
+ let sub=0; let html=''; cart.forEach((c,i)=>{sub+=c.p*c.qty; html+=`<div style="display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:6px 0"><div>${c.t} x${c.qty} = R${c.p*c.qty}</div><button onclick="remove(${i})" style="background:#999;color:#fff;border:none;padding:2px 6px;border-radius:4px">X</button></div>`});
+ document.getElementById('cartList').innerHTML=html||'Cart empty';
+ let ship=parseInt(document.querySelector('input[name="ship"]:checked').value);
+ document.getElementById('sub').innerText='R'+sub;
+ document.getElementById('sh').innerText='R'+ship;
+ document.getElementById('tot').innerText='R'+(sub+ship);
 }
-function openCart(){document.getElementById('cartDrawer').classList.add('open');document.getElementById('overlay').classList.add('show');renderCart();}
-function closeCart(){document.getElementById('cartDrawer').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
-function doCheckout(){
- if(cart.length===0){alert('Cart empty! Add books first!');return;}
- const shipEl=document.querySelector('input[name="ship"]:checked');
- const payEl=document.querySelector('input[name="pay"]:checked');
- const ship=parseInt(shipEl.value);
- const shipLabel=shipEl.dataset.label;
- const pay=payEl.value;
- if(pay==='Cash on Delivery' && ship!==100){alert('Cash on Delivery only available with Paxi R100!');return;}
- const txn='TXN'+Date.now().toString().slice(-8);
- const date=new Date().toLocaleString();
- const cur=document.getElementById('currency').value;
- const rate=18;
- let sub=0; cart.forEach(c=>sub+=c.price*c.qty);
- const grand=sub+ship;
- const fmt=(v)=>cur==='USD'?'$'+(v/rate).toFixed(2):'R'+v;
- let itemsText=''; cart.forEach(c=>{itemsText+=`${c.icon} ${c.title} x${c.qty} - ${fmt(c.price*c.qty)}\n`;});
- const receiptText=`🧾 AFROPAGES BOOKSTORE - OFFICIAL RECEIPT
-
-Transaction ID: ${txn}
-Date: ${date}
-Customer: ${user||'Guest'}
-
-ITEMS:
-${itemsText}
-
-Subtotal: ${fmt(sub)}
-Delivery: ${shipLabel} - ${fmt(ship)}
-Payment: ${pay}
-TOTAL PAID: ${fmt(grand)}
-
-${ship===0?'📥 EBOOK DOWNLOAD:\nLink: https://afropages.co.za/download/'+txn+'\nValid 24 hours - R0 FREE INSTANT':'📦 SHIPPING:\nCourier: '+shipLabel+'\nTracking: DHL-'+txn+'\nEst: '+(ship===400?'3-5 days International':'7-9 days SA - PEP')}
-
-Thank you! Stock updated live!
-Email: ${user||'guest email'}
-`;
- document.getElementById('receipt').innerText=receiptText;
- document.getElementById('receipt').style.display='block';
- cart=[]; save(); renderAll();
- alert('✅ CHECKOUT SUCCESSFUL!\nTransaction: '+txn+'\nTotal: '+fmt(grand)+'\nReceipt below!');
+function openCart(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('show');renderCart();}
+function closeCart(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+function checkout(){
+ if(cart.length===0){alert('Cart empty');return;}
+ let ship=document.querySelector('input[name="ship"]:checked'); let pay=document.querySelector('input[name="pay"]:checked');
+ let txn='TXN'+Date.now().toString().slice(-6);
+ let sub=cart.reduce((a,b)=>a+b.p*b.qty,0); let total=sub+parseInt(ship.value);
+ let txt=`🧾 RECEIPT - AFROPAGES\nTransaction: ${txn}\nDate: ${new Date().toLocaleString()}\nCustomer: ${user||'Guest'}\n\nITEMS:\n${cart.map(c=>`${c.t} x${c.qty} - R${c.p*c.qty}`).join('\n')}\n\nSubtotal: R${sub}\nDelivery: ${ship.parentElement.innerText}\nPayment: ${pay.value}\nTOTAL: R${total}\n\n${ship.value==0?'📥 eBook Download Ready: https://afropages.co.za/dl/'+txn+' (FREE)':'📦 Tracking: DHL-'+txn+' - Will ship!'}\n\nThank you!`;
+ document.getElementById('receipt').innerText=txt; document.getElementById('receipt').style.display='block';
+ cart=[]; save(); render(); alert('Checkout success! TXN: '+txn);
 }
 function toggleLogin(){document.getElementById('loginPanel').classList.toggle('show');}
 function doLogin(){
- const e=document.getElementById('email').value.trim();
- const p=document.getElementById('pass').value.trim();
- const m=document.getElementById('loginMsg');
- if(!e||!p){m.style.color='red';m.innerText='❌ Enter email AND password!';return;}
- if((e==='admin@afropages.co.za'&&p==='admin123')||p==='1234'||p==='admin123'){
-  localStorage.setItem('afro_user_v3',e);user=e;m.style.color='green';m.innerText='✅ Login successful! Welcome '+e;
-  updateCount(); setTimeout(()=>{document.getElementById('loginPanel').classList.remove('show');},1200);
- }else{m.style.color='red';m.innerText='❌ Invalid! Hint: password is 1234';}
+ let e=document.getElementById('email').value, p=document.getElementById('pass').value, m=document.getElementById('msg');
+ if(!e||!p){m.innerText='Enter email and password!';m.style.color='red';return;}
+ if(p==='1234'||p==='admin123'){localStorage.setItem('usr',e);user=e; m.innerText='✅ Login success! '+e; m.style.color='green'; document.getElementById('loginBtn').innerText='👤 '+e.split('@')[0]; setTimeout(()=>{document.getElementById('loginPanel').classList.remove('show')},1000);}
+ else{m.innerText='❌ Invalid! Use 1234 or admin123'; m.style.color='red';}
 }
-function doLogout(){localStorage.removeItem('afro_user_v3');user=null;document.getElementById('loginBtn').innerText='Login';document.getElementById('loginMsg').innerText='Logged out!';updateCount();}
-function resetStock(){if(confirm('Reset all stock?')){localStorage.removeItem('afro_books_v3');books=JSON.parse(JSON.stringify(defaultBooks));save();renderAll();alert('Stock reset! 12,4,8,2,15,0 restored!');}}
-window.onload=()=>{renderAll(); if(user)updateCount();};
+function resetS(){localStorage.removeItem('bks'); books=JSON.parse(JSON.stringify(def)); save(); render(); alert('Stock reset to 12,4,8,2,15,0');}
+window.onload=render;
 </script>
 </body>
 </html>
